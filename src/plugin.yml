@@ -1,0 +1,6 @@
+name: Crates
+version: 0.0.1
+author: SPRLC
+main: be.sprlc.crates.Crates
+commands:
+  crategen:
