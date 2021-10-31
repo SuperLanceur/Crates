@@ -1,6 +1,5 @@
 package be.sprlc.crates.util.virtual;
 
-import be.sprlc.crates.Crates;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import net.minecraft.server.v1_8_R3.NBTTagList;
 import org.bukkit.Bukkit;
@@ -21,13 +20,19 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import be.sprlc.crates.Crates;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public abstract class VirtualMenu implements Listener
 {
-    protected Player player;
-    protected String menuName;
-    protected int menuRow;
-    protected Inventory menuInventory;
+    private Player player;
+    private String menuName;
+    private int menuRow;
+    private Inventory menuInventory;
+    private BukkitRunnable runnable;
+    private Map<String, Object> properties;
     protected HashMap<Integer, VirtualItem> eventClick;
 
     public VirtualMenu(final Player player, final String menuName, final int menuRow) {
@@ -36,18 +41,26 @@ public abstract class VirtualMenu implements Listener
         this.menuName = menuName;
         this.menuRow = menuRow;
         this.menuInventory = Bukkit.createInventory(null, this.menuRow * 9, this.menuName);
+        this.runnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                update();
+            }
+        };
+        this.properties = new HashMap<>();
         this.eventClick.clear();
     }
 
     public void open() {
         this.player.openInventory(this.menuInventory);
-        if (!HandlerList.getHandlerLists().contains(this)) {
+        this.runnable.runTaskTimer(Crates.getInstance(), 1, 1);
+        if (!HandlerList.getHandlerLists().contains(this))
             Bukkit.getPluginManager().registerEvents(this, Crates.getInstance());
-        }
     }
 
     public void destroy() {
         HandlerList.unregisterAll(this);
+        this.runnable.cancel();
         if (this.player.getOpenInventory() != null && this.player.getOpenInventory().getTitle().equals(this.menuName)) {
             this.player.closeInventory();
         }
@@ -125,6 +138,16 @@ public abstract class VirtualMenu implements Listener
         if ((this.menuName.equals(inv.getName())) && (this.player.equals(player)))
             destroy();
     }
+
+    public void setProperty(String name, Object value){
+        properties.put(name, value);
+    }
+
+    public <T> T getProperty(String name){
+        return (T) properties.get(name);
+    }
+
+    public abstract void update(); // not sure if it should be abstract
     /*@EventHandler(priority = EventPriority.LOWEST)
     public void onInventoryClose(final InventoryCloseEvent e) {
         final Player player = (Player)e.getPlayer();
@@ -139,5 +162,6 @@ public abstract class VirtualMenu implements Listener
             }, 1L);
         }
     }*/
+
 
 }

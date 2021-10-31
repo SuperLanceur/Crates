@@ -12,8 +12,10 @@ public class ListenerManager {
         this.plugin = plugin;
     }
 
-    public void registerEvents(){
+    public void registerListeners(){
+        final PluginManager pm = Bukkit.getPluginManager();
 
+        pm.registerEvents(new GlobalListener(), this.plugin);
     }
 
 }

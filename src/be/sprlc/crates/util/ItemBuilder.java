@@ -37,7 +37,7 @@ public class ItemBuilder {
         return stack.getItemMeta();
     }
 
-    public ItemBuilder setColor(Color color) {
+    public ItemBuilder setLeatherColor(Color color) {
         LeatherArmorMeta meta = (LeatherArmorMeta) stack.getItemMeta();
         meta.setColor(color);
         setItemMeta(meta);
@@ -61,13 +61,6 @@ public class ItemBuilder {
         ItemMeta meta = stack.getItemMeta();
         meta.spigot().setUnbreakable(unbreakable);
         stack.setItemMeta(meta);
-        return this;
-    }
-
-    public ItemBuilder setBannerColor (DyeColor color) {
-        BannerMeta meta = (BannerMeta) stack.getItemMeta();
-        meta.setBaseColor(color);
-        setItemMeta(meta);
         return this;
     }
 

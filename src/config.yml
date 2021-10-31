@@ -1,0 +1,12 @@
+drops:
+  first:
+    chance: 10
+    name: 51
+    lore:
+      - "First"
+      - "Second"
+  second:
+    chance: 30
+    name: "salut"
+    lore:
+      - ""
